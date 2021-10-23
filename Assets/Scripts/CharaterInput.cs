@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class CharaterInput : MonoBehaviour
 {
-    public string moveAxisName = "Vertical";
-    public string rotateAxisName = "Horizontal";
+    public string vertical = "Vertical";
+    public string horizontal = "Horizontal";
 
-    public float move
+    public float verticalInput
     {
         get;
         private set;
     }
 
-    public float rotate
+    public float horizontalInput
     {
         get;
         private set;
@@ -21,10 +21,10 @@ public class CharaterInput : MonoBehaviour
 
     private void Update()
     {
-        move = Input.GetAxis(moveAxisName);
-        rotate = Input.GetAxis(rotateAxisName);
+        verticalInput = Input.GetAxis(vertical);
+        horizontalInput = Input.GetAxis(horizontal);
 
-        Debug.Log("move : " + move);
-        Debug.Log("rotate : " + rotate);
+        //Debug.Log("move : " + move);
+        //Debug.Log("rotate : " + rotate);
     }
 }

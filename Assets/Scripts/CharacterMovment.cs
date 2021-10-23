@@ -9,6 +9,12 @@ public class CharacterMovment : MonoBehaviour
     float turnSpeed = 60f;
 
     private CharaterInput characterInput;
+    public CharacterController controller;
+
+    public float turnSmoothTime = 0.1f;
+    private float turnSmoothVelocity;
+
+    public Transform cam;
 
     // Start is called before the first frame update
     void Start()
@@ -19,34 +25,27 @@ public class CharacterMovment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Rotate();
         Move();
     }
 
     private void Move()
     {
-        if(characterInput.move != 0)
+        // 방향
+        Vector3 direction = new Vector3(characterInput.horizontalInput, 0f, characterInput.verticalInput).normalized;
+
+        if (direction.magnitude >= 0.1f)
         {
-            Vector3 moveVector = characterInput.move * Vector3.forward;
-            transform.Translate(moveVector * speed * Time.deltaTime);
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            controller.Move(direction * speed * Time.deltaTime);
             animator.SetBool("IsWalk", true);
         }
         else
         {
             animator.SetBool("IsWalk", false);
-        }
-    }
-
-    private void Rotate()
-    {
-        if(characterInput.rotate != 0)
-        {
-            Quaternion newRotation = Quaternion.Euler(0, characterInput.rotate * turnSpeed, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * newRotation, Time.deltaTime);
-        }
-        else
-        {
-
         }
     }
 }
